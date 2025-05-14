@@ -22,7 +22,7 @@ def stitch_with_cpp_wrapper(input_00, input_10, output_path, wrapper_path="./ins
                 wrapper_path,
                 "-inputs", input_00, input_10,
                 "-output", str(output_path),
-                "-ai_stitching_model", "/opt/Insta360/MediaSDK/modelfile/ai_stitch_model.ins",
+                "-ai_stitching_model", "/home/preston/Documents/Linux_CameraSDK-2.0.2-build1-20250418+MediaSDK-3.0.1-build1-20250418/libMediaSDK-dev-3.0.1-20250418-amd64/modelfile/ai_stitcher_v2.ins",
                 "-stitch_type", "aistitch",
                 "-enable_flowstate",
                 "-enable_directionlock",
