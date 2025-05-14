@@ -3,9 +3,7 @@
 #include <string>
 #include <memory>
 
-#include "ins_stitcher.h"  // Adjust to your actual include path
-#include "video_stitcher.h"
-#include "log/log.h"
+#include "ins_stitcher.h"
 
 int main(int argc, char* argv[]) {
     if (argc < 4) {
@@ -19,33 +17,34 @@ int main(int argc, char* argv[]) {
 
     std::vector<std::string> input_paths = {input_file_00, input_file_10};
 
-    ins::InitEnv();
-    ins::SetLogLevel(ins::InsLogLevel::INFO);
+    ins::InitEnv();  // Initialize the SDK
 
-    auto stitcher = std::make_shared<ins::VideoStitcher>();
+    std::shared_ptr<ins::Stitcher> stitcher = std::make_shared<ins::Stitcher>();
 
+    // Set input and output paths
     stitcher->SetInputPath(input_paths);
     stitcher->SetOutputPath(output_file);
-    stitcher->SetOutputSize(7680, 3840);  // 8K output
-    stitcher->EnableH265Encoder();
+
+    // Output settings
+    stitcher->SetOutputSize(7680, 3840); // 8K
+    stitcher->EnableH265Encoder();       // H.265 hardware encoding
     stitcher->SetOutputBitRate(100 * 1000 * 1000); // 100 Mbps
 
-    // AI Stitching
-    std::string ai_model = "/usr/local/share/MediaSDK/modelfile/ai_stitch_model.ins";
-    stitcher->SetAiStitchModelFile(ai_model);
+    // AI Stitching model (required)
+    stitcher->SetAiStitchModelFile("/usr/local/share/MediaSDK/modelfile/ai_stitch_model.ins");
     stitcher->SetStitchType(ins::STITCH_TYPE::AIFLOW);
 
-    // Stabilization and correction
+    // Optional corrections
     stitcher->EnableFlowState(true);
     stitcher->EnableDirectionLock(true);
     stitcher->EnableStitchFusion(true);
 
-    // You can change the lens guard type here if needed
+    // Set lens guard type if applicable
     stitcher->SetCameraAccessoryType(ins::CameraAccessoryType::kOnex3LensGuardS);
 
-    std::cout << "Starting stitching process..." << std::endl;
+    std::cout << "Starting stitching...\n";
     stitcher->StartStitch();
-    std::cout << "Stitching complete: " << output_file << std::endl;
+    std::cout << "Stitching complete: " << output_file << "\n";
 
     return 0;
 }
