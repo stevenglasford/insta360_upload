@@ -14,11 +14,22 @@ def find_dual_tracks(input_dir):
             paired_files.append((f, match))
     return paired_files
 
-def stitch_with_cpp_wrapper(input_00, input_10, output_path, wrapper_path="./stitch_wrapper"):
-    """Calls compiled C++ wrapper binary to stitch .insv files."""
+def stitch_with_cpp_wrapper(input_00, input_10, output_path, wrapper_path="./insta360_stitcher"):
+    """Calls the compiled C++ stitcher binary with full arguments."""
     try:
         result = subprocess.run(
-            [wrapper_path, input_00, input_10, str(output_path)],
+            [
+                wrapper_path,
+                "-inputs", input_00, input_10,
+                "-output", str(output_path),
+                "-ai_stitching_model", "/opt/Insta360/MediaSDK/modelfile/ai_stitch_model.ins",
+                "-stitch_type", "aistitch",
+                "-enable_flowstate",
+                "-enable_directionlock",
+                "-enable_h265_encoder",
+                "-bitrate", "60000000",
+                "-output_size", "3840x1920"
+            ],
             capture_output=True,
             text=True,
             check=True
@@ -33,7 +44,7 @@ def upload_to_backblaze(file_path, b2_file_name):
     """Uploads the stitched video to Backblaze B2 using CLI."""
     try:
         result = subprocess.run(
-            ['backblaze-b2', '360-videos-insta360', str(file_path), b2_file_name],
+            ['backblaze-b2', 'upload-file', '360-videos-insta360', str(file_path), b2_file_name],
             check=True,
             capture_output=True,
             text=True
@@ -48,7 +59,7 @@ def main():
     input_dir = "/mount/insta"
     output_dir = "/home/preston/Downloads/temp"
     log_dir = "/home/preston/Downloads/uploadLogs"
-    wrapper_bin = "./stitch_wrapper"  # Adjust if not in current dir
+    wrapper_bin = "./insta360_stitcher"  # Adjust if necessary
 
     os.makedirs(output_dir, exist_ok=True)
     os.makedirs(log_dir, exist_ok=True)
