@@ -59,9 +59,9 @@ def upload_to_backblaze(file_path, b2_file_name):
         return False
 
 def main():
-    input_dir = "/media/steven/disk"
-    output_dir = "/media/steven/disk/stitched"
-    log_dir = "/media/steven/disk/logs"
+    input_dir = "/mount/insta"
+    output_dir = "/home/preston/Downloads/temp"
+    log_dir = "/home/preston/Downloads/uploadLogs"
 
     os.makedirs(output_dir, exist_ok=True)
     os.makedirs(log_dir, exist_ok=True)
