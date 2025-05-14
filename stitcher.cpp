@@ -3,7 +3,8 @@
 #include <string>
 #include <memory>
 
-#include <ins_stitcher.h>
+#include "/usr/include/ins_stitcher.h"
+
 
 int main(int argc, char* argv[]) {
     if (argc < 4) {
