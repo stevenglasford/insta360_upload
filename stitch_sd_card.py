@@ -6,7 +6,8 @@ from pathlib import Path
 from datetime import datetime
 
 # Load MediaSDK shared library
-lib = ctypes.CDLL('/usr/local/lib/libMediaSDK.so')
+lib = ctypes.CDLL('/usr/lib/libMediaSDK.so')
+
 
 from MediaSDK import VideoStitcher, STITCH_TYPE, CameraAccessoryType
 
