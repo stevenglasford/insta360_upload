@@ -1,10 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <memory>
 
-#include "/usr/include/ins_stitcher.h"
-
+#include "ins_stitcher.h"
 
 int main(int argc, char* argv[]) {
     if (argc < 4) {
@@ -18,34 +16,28 @@ int main(int argc, char* argv[]) {
 
     std::vector<std::string> input_paths = {input_file_00, input_file_10};
 
-    ins::InitEnv();  // Initialize the SDK
+    ins::InitEnv();
 
-    std::shared_ptr<ins::Stitcher> stitcher = std::make_shared<ins::Stitcher>();
+    ins::StitcherImp stitcher;
 
-    // Set input and output paths
-    stitcher->SetInputPath(input_paths);
-    stitcher->SetOutputPath(output_file);
+    stitcher.SetInputPath(input_paths);
+    stitcher.SetOutputPath(output_file);
+    stitcher.SetOutputSize(7680, 3840); // 8K
+    stitcher.EnableH265Encoder();       // H.265 encoding
+    stitcher.SetOutputBitRate(100 * 1000 * 1000); // 100 Mbps
 
-    // Output settings
-    stitcher->SetOutputSize(7680, 3840); // 8K
-    stitcher->EnableH265Encoder();       // H.265 hardware encoding
-    stitcher->SetOutputBitRate(100 * 1000 * 1000); // 100 Mbps
+    // Required AI stitching model path
+    stitcher.SetAiStitchModelFile("/usr/local/share/MediaSDK/modelfile/ai_stitch_model.ins");
+    stitcher.SetStitchType(ins::STITCH_TYPE::AIFLOW);
 
-    // AI Stitching model (required)
-    stitcher->SetAiStitchModelFile("/usr/local/share/MediaSDK/modelfile/ai_stitch_model.ins");
-    stitcher->SetStitchType(ins::STITCH_TYPE::AIFLOW);
+    // Optional enhancements
+    stitcher.EnableFlowState(true);
+    stitcher.EnableDirectionLock(true);
+    stitcher.EnableStitchFusion(true);
 
-    // Optional corrections
-    stitcher->EnableFlowState(true);
-    stitcher->EnableDirectionLock(true);
-    stitcher->EnableStitchFusion(true);
-
-    // Set lens guard type if applicable
-    stitcher->SetCameraAccessoryType(ins::CameraAccessoryType::kOnex3LensGuardS);
-
-    std::cout << "Starting stitching...\n";
-    stitcher->StartStitch();
-    std::cout << "Stitching complete: " << output_file << "\n";
+    std::cout << "Starting stitch...\n";
+    stitcher.StartStitch();
+    std::cout << "Stitch complete: " << output_file << "\n";
 
     return 0;
 }
